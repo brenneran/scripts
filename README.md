@@ -1,4 +1,4 @@
-# Script Repository
+# Script Repository.
 
 This repository contains scripts written in various languages for different tasks.
 
