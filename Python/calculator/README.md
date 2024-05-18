@@ -10,7 +10,7 @@ pip install flask
 ```
 
 ### Project Directory Structure:
-```json
+```bash
 calculator/
 │
 ├── app.py
