@@ -21,13 +21,12 @@
                 <input type="number" id="annual_interest_rate" name="annual_interest_rate" step="0.01" required value="{{ request.form['annual_interest_rate'] if 'annual_interest_rate' in request.form else '' }}">
 
                 <label for="compounding_frequency">Compounding Frequency per Year:</label>
-<select id="compounding_frequency" name="compounding_frequency" required>
-    <option value="0" {{ 'selected' if 'compounding_frequency' in request.form and request.form['compounding_frequency'] == '0' else '' }}>NO reinvest</option>
-    <option value="2" {{ 'selected' if 'compounding_frequency' in request.form and request.form['compounding_frequency'] == '2' else '' }}>Once a half year</option>
-    <option value="12" {{ 'selected' if 'compounding_frequency' in request.form and request.form['compounding_frequency'] == '12' else '' }}>Every month</option>
-    <option value="1" {{ 'selected' if 'compounding_frequency' in request.form and request.form['compounding_frequency'] == '1' else '' }}>Once a year</option>
-</select>
-
+                <select id="compounding_frequency" name="compounding_frequency" required>
+                    <option value="0" {{ 'selected' if 'compounding_frequency' in request.form and request.form['compounding_frequency'] == '0' else '' }}>NO reinvest</option>
+                    <option value="2" {{ 'selected' if 'compounding_frequency' in request.form and request.form['compounding_frequency'] == '2' else '' }}>Once a half year</option>
+                    <option value="12" {{ 'selected' if 'compounding_frequency' in request.form and request.form['compounding_frequency'] == '12' else '' }}>Every month</option>
+                    <option value="1" {{ 'selected' if 'compounding_frequency' in request.form and request.form['compounding_frequency'] == '1' else '' }}>Once a year</option>
+                </select>
 
                 <label for="investment_period">Investment Period (years):</label>
                 <input type="number" id="investment_period" name="investment_period" required value="{{ request.form['investment_period'] if 'investment_period' in request.form else '' }}">
@@ -36,9 +35,22 @@
                 <input type="number" id="inflation_rate" name="inflation_rate" step="0.01" value="{{ request.form['inflation_rate'] if 'inflation_rate' in request.form else '' }}">
 
                 <input type="submit" value="Calculate">
+                <input type="button" value="Clear" class="clear-button" onclick="clearForm()">
             </form>
             <div class="result">{{ result }}</div>
         </div>
     </div>
+
+    <script>
+        function clearForm() {
+            document.getElementById("initial_investment").value = "";
+            document.getElementById("monthly_contribution").value = "";
+            document.getElementById("annual_interest_rate").value = "";
+            document.getElementById("compounding_frequency").value = "";
+            document.getElementById("investment_period").value = "";
+            document.getElementById("inflation_rate").value = "";
+            document.querySelector('.result').innerHTML = ""; // Clear result
+        }
+    </script>
 </body>
 </html>
