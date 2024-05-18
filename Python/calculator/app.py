@@ -2,13 +2,25 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
+# Add cache control headers to prevent caching
+@app.after_request
+def add_header(response):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Expires"] = 0
+    response.headers["Pragma"] = "no-cache"
+    return response
+
 @app.route('/', methods=['GET', 'POST'])
 def pension_calculator():
     if request.method == 'POST':
-        try:
-            P = float(request.form['initial_investment'])
-        except ValueError:
-            return render_template('index.html', result="Invalid initial investment amount.")
+        initial_investment_input = request.form.get('initial_investment')
+        if initial_investment_input:
+            try:
+                P = float(initial_investment_input)
+            except ValueError:
+                return render_template('index.html', result="Invalid initial investment amount.")
+        else:
+            P = 0
 
         monthly_contribution_input = request.form.get('monthly_contribution')
         if monthly_contribution_input:
@@ -21,10 +33,16 @@ def pension_calculator():
             monthly_contribution = 0
             annual_contribution = 0
 
-        try:
-            r = float(request.form['annual_interest_rate']) / 100
-        except ValueError:
-            return render_template('index.html', result="Invalid annual interest rate.")
+        annual_interest_rate_input = request.form.get('annual_interest_rate')
+        if annual_interest_rate_input:
+            try:
+                r = float(annual_interest_rate_input) / 100
+                if r <= 0:
+                    return render_template('index.html', result="Annual interest rate must be greater than 0.")
+            except ValueError:
+                return render_template('index.html', result="Invalid annual interest rate.")
+        else:
+            r = 0
 
         compounding_frequency = int(request.form['compounding_frequency'])
 
