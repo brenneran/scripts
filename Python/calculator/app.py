@@ -70,18 +70,19 @@ def pension_calculator():
         else:
             inflation_rate = 0
 
-        # Calculate future value of initial investment and contributions
+        # Calculate future value of initial investment
         FV_initial = P * (1 + r / compounding_frequency) ** (compounding_frequency * t)
 
+        # Calculate future value of monthly contributions
         FV_contributions = 0
         for month in range(1, t * 12 + 1):
-            FV_contributions += monthly_contribution * (1 + r / compounding_frequency) ** (compounding_frequency * (t - (month / 12)))
+            FV_contributions += monthly_contribution * (1 + r / compounding_frequency) ** (compounding_frequency * ((t * 12 - month + 1) / 12))
 
         final_sum = FV_initial + FV_contributions
         result = f"The future value of your investment is: ${final_sum:,.2f}"
         if inflation_rate > 0:
             adjusted_final_sum = final_sum / ((1 + inflation_rate) ** t)
-            result += f" (Adjusted for inflation: ${adjusted_final_sum:,.2f})"
+            result += f" (Show values after inflation: ${adjusted_final_sum:,.2f})"
 
         # Calculate total contributions
         total_contributions = P + annual_contribution * t
