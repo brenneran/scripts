@@ -182,5 +182,5 @@ th {
 
 .chart-container {
     width: 100%; /* Adjust the width as needed */
-    /* Add any other styles you want for the chart container */
+    margin-bottom: 10px;
 }
