@@ -44,33 +44,33 @@ def pension_calculator():
         else:
             r = 0
 
-        compounding_frequency = int(request.form['compounding_frequency'])
+        try:
+            compounding_frequency = int(request.form['compounding_frequency'])
+        except ValueError:
+            return render_template('index.html', result="Invalid compounding frequency.")
 
-        if compounding_frequency == 0:
+        try:
+            t = int(request.form['investment_period'])
+        except ValueError:
+            return render_template('index.html', result="Invalid investment period.")
+
+        inflation_rate_input = request.form.get('inflation_rate')
+        if inflation_rate_input:
             try:
-                t = int(request.form['investment_period'])
+                inflation_rate = float(inflation_rate_input) / 100
             except ValueError:
-                return render_template('index.html', result="Invalid investment period.")
-                
-            FV_real = P + (annual_contribution * t)
-            inflation_rate = 0  # Set inflation_rate to 0 when there's no reinvestment
+                return render_template('index.html', result="Invalid inflation rate.")
         else:
-            try:
-                t = int(request.form['investment_period'])
-            except ValueError:
-                return render_template('index.html', result="Invalid investment period.")
+            inflation_rate = 0
 
-            inflation_rate_input = request.form.get('inflation_rate')
-            if inflation_rate_input:
-                try:
-                    inflation_rate = float(inflation_rate_input) / 100
-                except ValueError:
-                    return render_template('index.html', result="Invalid inflation rate.")
-            else:
-                inflation_rate = 0
-
+        if compounding_frequency > 0:
             real_interest_rate = (1 + r) / (1 + inflation_rate) - 1
-            FV_real = P * (1 + real_interest_rate / compounding_frequency)**(compounding_frequency * t) + (annual_contribution * ((1 + real_interest_rate / compounding_frequency)**(compounding_frequency * t) - 1) / (real_interest_rate / compounding_frequency))
+            FV_real = P * (1 + real_interest_rate / compounding_frequency) ** (compounding_frequency * t)
+            for month in range(1, t * 12 + 1):
+                FV_real += monthly_contribution * (1 + real_interest_rate / compounding_frequency) ** (
+                            compounding_frequency * (t - (month / 12)))
+        else:
+            FV_real = P + (annual_contribution * t)
 
         result = f"The future value of your investment is: ${FV_real:,.2f}"
         if inflation_rate > 0:

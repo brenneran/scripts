@@ -11,10 +11,10 @@
         <div class="form-container">
             <h1>Pension Calculator</h1>
             <form method="POST">
-                <label for="initial_investment">Initial Investment Amount ($):</label>
+                <label for="initial_investment">Initial Investment Amount (optional)</label>
                 <input type="number" id="initial_investment" name="initial_investment" step="0.01" value="{{ request.form['initial_investment'] if 'initial_investment' in request.form else '' }}" autocomplete="off">
 
-                <label for="monthly_contribution">Monthly Contribution Amount ($) (optional):</label>
+                <label for="monthly_contribution">Monthly Contribution Amount(optional)</label>
                 <input type="number" id="monthly_contribution" name="monthly_contribution" step="0.01" value="{{ request.form['monthly_contribution'] if 'monthly_contribution' in request.form else '' }}" autocomplete="off">
 
                 <label for="annual_interest_rate">Annual Interest Rate (%):</label>
@@ -23,7 +23,7 @@
 
                 <label for="compounding_frequency">Compounding Frequency per Year:</label>
                 <select id="compounding_frequency" name="compounding_frequency">
-                    <option value="0" {{ 'selected' if 'compounding_frequency' in request.form and request.form['compounding_frequency'] == '0' else '' }}>NO reinvest</option>
+                    <option value="0" {{ 'selected' if 'compounding_frequency' in request.form and request.form['compounding_frequency'] == '0' else '' }}>No reinvest</option>
                     <option value="2" {{ 'selected' if 'compounding_frequency' in request.form and request.form['compounding_frequency'] == '2' else '' }}>Once a half year</option>
                     <option value="12" {{ 'selected' if 'compounding_frequency' in request.form and request.form['compounding_frequency'] == '12' else '' }}>Every month</option>
                     <option value="1" {{ 'selected' if 'compounding_frequency' in request.form and request.form['compounding_frequency'] == '1' else '' }}>Once a year</option>
@@ -38,7 +38,7 @@
                 <input type="submit" value="Calculate">
                 <input type="button" value="Clear" class="clear-button" onclick="clearForm()">
             </form>
-            <div class="result">{{ result }}</div>
+            <div id="result" class="result">{{ result|safe }}</div>
         </div>
     </div>
 
@@ -52,24 +52,24 @@
             document.getElementById("investment_period").value = "";
             document.getElementById("inflation_rate").value = "";
             document.getElementById("result").innerHTML = "";
-    
+
             // Clear the error messages
             document.getElementById("annual_interest_rate_error").innerHTML = "";
             document.getElementById("interest_rate_error").style.display = "none";
         }
-    
+
         // Function to validate the annual interest rate
         function validateInterestRate() {
             var interestRateInput = document.getElementById("annual_interest_rate");
             var errorSpan = document.getElementById("annual_interest_rate_error");
             var interestRate = parseFloat(interestRateInput.value);
-    
+
             if (interestRate <= 0) {
                 errorSpan.innerHTML = "Annual interest rate must be greater than 0.";
             } else {
                 errorSpan.innerHTML = "";
             }
-    
+
             // Show or hide the error message based on the input value
             var errorSpan = document.getElementById("interest_rate_error");
             if (interestRate == 0) {
@@ -78,7 +78,7 @@
                 errorSpan.style.display = "none";
             }
         }
-    
+
         // Attach the validation function to the input field
         document.getElementById("annual_interest_rate").addEventListener("input", validateInterestRate);
     </script>
