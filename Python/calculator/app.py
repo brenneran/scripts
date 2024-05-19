@@ -45,11 +45,6 @@ def pension_calculator():
             r = 0
 
         try:
-            compounding_frequency = int(request.form['compounding_frequency'])
-        except ValueError:
-            return render_template('index.html', result="Invalid compounding frequency.")
-
-        try:
             t = int(request.form['investment_period'])
         except ValueError:
             return render_template('index.html', result="Invalid investment period.")
@@ -63,20 +58,41 @@ def pension_calculator():
         else:
             inflation_rate = 0
 
-        if compounding_frequency > 0:
-            real_interest_rate = (1 + r) / (1 + inflation_rate) - 1
-            FV_real = P * (1 + real_interest_rate / compounding_frequency) ** (compounding_frequency * t)
-            for month in range(1, t * 12 + 1):
-                FV_real += monthly_contribution * (1 + real_interest_rate / compounding_frequency) ** (
-                            compounding_frequency * (t - (month / 12)))
+        compounding_frequency_input = request.form.get('compounding_frequency')
+        if compounding_frequency_input:
+            compounding_frequency = int(compounding_frequency_input)
         else:
-            FV_real = P + (annual_contribution * t)
+            compounding_frequency = 1  # Default to Once a year if not provided
 
-        result = f"The future value of your investment is: ${FV_real:,.2f}"
-        if inflation_rate > 0:
-            result = f"The future value of your investment adjusted for inflation is: ${FV_real:,.2f}"
+        if compounding_frequency == 0:  # No reinvest
+            real_interest_rate = r
+        else:
+            real_interest_rate = (1 + r / compounding_frequency) ** compounding_frequency - 1
 
-        return render_template('index.html', result=result)
+        # Calculate future value considering both initial investment and annual contributions
+        future_value = 0
+        year_data = []
+        current_sum = P
+
+        for year in range(1, t + 1):
+            interest = current_sum * real_interest_rate
+            current_sum += interest + annual_contribution
+            year_data.append({
+                "year": year,
+                "started_sum": f"${P:,.2f}",
+                "percentage_income_invested": f"${interest:,.2f}",
+                "invested": f"${annual_contribution:,.2f}",
+                "final_sum": f"${current_sum:,.2f}"
+            })
+
+        future_value = current_sum
+
+        total_contributions = P + (annual_contribution * t)
+
+        result = (f"The future value of your investment is: ${future_value:,.2f}.<br>"
+                  f"Total contributions over {t} years: ${total_contributions:,.2f}.")
+
+        return render_template('index.html', result=result, data=year_data)
 
     return render_template('index.html', result="")
 
