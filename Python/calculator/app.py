@@ -2,13 +2,25 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
+# Add cache control headers to prevent caching
+@app.after_request
+def add_header(response):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Expires"] = 0
+    response.headers["Pragma"] = "no-cache"
+    return response
+
 @app.route('/', methods=['GET', 'POST'])
 def pension_calculator():
     if request.method == 'POST':
-        try:
-            P = float(request.form['initial_investment'])
-        except ValueError:
-            return render_template('index.html', result="Invalid initial investment amount.")
+        initial_investment_input = request.form.get('initial_investment')
+        if initial_investment_input:
+            try:
+                P = float(initial_investment_input)
+            except ValueError:
+                return render_template('index.html', result="Invalid initial investment amount.")
+        else:
+            P = 0
 
         monthly_contribution_input = request.form.get('monthly_contribution')
         if monthly_contribution_input:
@@ -21,38 +33,44 @@ def pension_calculator():
             monthly_contribution = 0
             annual_contribution = 0
 
-        try:
-            r = float(request.form['annual_interest_rate']) / 100
-        except ValueError:
-            return render_template('index.html', result="Invalid annual interest rate.")
-
-        compounding_frequency = int(request.form['compounding_frequency'])
-
-        if compounding_frequency == 0:
+        annual_interest_rate_input = request.form.get('annual_interest_rate')
+        if annual_interest_rate_input:
             try:
-                t = int(request.form['investment_period'])
+                r = float(annual_interest_rate_input) / 100
+                if r <= 0:
+                    return render_template('index.html', result="Annual interest rate must be greater than 0.")
             except ValueError:
-                return render_template('index.html', result="Invalid investment period.")
-                
-            FV_real = P + (annual_contribution * t)
-            inflation_rate = 0  # Set inflation_rate to 0 when there's no reinvestment
+                return render_template('index.html', result="Invalid annual interest rate.")
         else:
+            r = 0
+
+        try:
+            compounding_frequency = int(request.form['compounding_frequency'])
+        except ValueError:
+            return render_template('index.html', result="Invalid compounding frequency.")
+
+        try:
+            t = int(request.form['investment_period'])
+        except ValueError:
+            return render_template('index.html', result="Invalid investment period.")
+
+        inflation_rate_input = request.form.get('inflation_rate')
+        if inflation_rate_input:
             try:
-                t = int(request.form['investment_period'])
+                inflation_rate = float(inflation_rate_input) / 100
             except ValueError:
-                return render_template('index.html', result="Invalid investment period.")
+                return render_template('index.html', result="Invalid inflation rate.")
+        else:
+            inflation_rate = 0
 
-            inflation_rate_input = request.form.get('inflation_rate')
-            if inflation_rate_input:
-                try:
-                    inflation_rate = float(inflation_rate_input) / 100
-                except ValueError:
-                    return render_template('index.html', result="Invalid inflation rate.")
-            else:
-                inflation_rate = 0
-
+        if compounding_frequency > 0:
             real_interest_rate = (1 + r) / (1 + inflation_rate) - 1
-            FV_real = P * (1 + real_interest_rate / compounding_frequency)**(compounding_frequency * t) + (annual_contribution * ((1 + real_interest_rate / compounding_frequency)**(compounding_frequency * t) - 1) / (real_interest_rate / compounding_frequency))
+            FV_real = P * (1 + real_interest_rate / compounding_frequency) ** (compounding_frequency * t)
+            for month in range(1, t * 12 + 1):
+                FV_real += monthly_contribution * (1 + real_interest_rate / compounding_frequency) ** (
+                            compounding_frequency * (t - (month / 12)))
+        else:
+            FV_real = P + (annual_contribution * t)
 
         result = f"The future value of your investment is: ${FV_real:,.2f}"
         if inflation_rate > 0:
