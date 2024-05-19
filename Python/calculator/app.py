@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+import json
 
 app = Flask(__name__)
 
@@ -14,12 +15,15 @@ def add_header(response):
 def pension_calculator():
     table_data = []
     total_contributions = 0  # Initialize total_contributions
+    initial_investment = 0
+    total_earned = 0
 
     if request.method == 'POST':
         initial_investment_input = request.form.get('initial_investment')
         if initial_investment_input:
             try:
                 P = float(initial_investment_input)
+                initial_investment = P
             except ValueError:
                 return render_template('index.html', result="Invalid initial investment amount.", table_data=table_data)
         else:
@@ -76,7 +80,8 @@ def pension_calculator():
         final_sum = FV_initial + FV_contributions
         result = f"The future value of your investment is: ${final_sum:,.2f}"
         if inflation_rate > 0:
-            result = f"The future value of your investment adjusted for inflation is: ${final_sum:,.2f}"
+            adjusted_final_sum = final_sum / ((1 + inflation_rate) ** t)
+            result += f" (Adjusted for inflation: ${adjusted_final_sum:,.2f})"
 
         # Calculate total contributions
         total_contributions = P + annual_contribution * t
@@ -88,13 +93,33 @@ def pension_calculator():
         accumulated_value = P
         for year in range(1, t + 1):
             start_sum = accumulated_value
-            for month in range(1, 13):
+            for month in range(1, 12 + 1):
                 accumulated_value = (accumulated_value + monthly_contribution) * (1 + r / compounding_frequency) ** (compounding_frequency / 12)
             interest_income = accumulated_value - start_sum - annual_contribution
             end_sum = accumulated_value
             table_data.append((year, f"${start_sum:,.2f}", f"${interest_income:,.2f}", f"${annual_contribution:,.2f}", f"${end_sum:,.2f}"))
-        
-        return render_template('index.html', result=result, table_data=table_data, total_contributions=f"${total_contributions:,.2f}", total_earned=f"${total_earned:,.2f}")
+
+        # Prepare data for the pie chart
+        pie_data = {
+            'labels': ['Initial Investment', 'Total Earned', 'Total Contributions'],
+            'data': [initial_investment, total_earned, total_contributions],
+            'backgroundColor': [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)'
+            ],
+            'borderColor': [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)'
+            ],
+            'borderWidth': 1
+        }
+
+        # Convert pie_data to JSON
+        pie_data_json = json.dumps(pie_data)
+
+        return render_template('index.html', result=result, table_data=table_data, total_contributions=f"${total_contributions:,.2f}", total_earned=f"${total_earned:,.2f}", pie_data=pie_data_json)
 
     return render_template('index.html', result="", table_data=table_data)
 

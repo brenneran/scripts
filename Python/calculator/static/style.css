@@ -157,4 +157,7 @@ th {
 .total-value {
     /* Add styles for the total value */
 }
+.total-value-result {
+    font-weight: 600;
+}
 
