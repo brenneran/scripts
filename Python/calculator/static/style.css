@@ -29,6 +29,7 @@ body {
     overflow: auto; /* Ensure form-container handles overflow */
 }
 
+
 h1 {
     margin-bottom: 20px;
     color: #333;
@@ -72,8 +73,16 @@ input[type="submit"]:hover {
 
 .result {
     margin-top: 20px;
-    font-size: 18px;
+    font-size: 16px;
     color: #333;
+}
+
+.label-container {
+    margin-top: 10px;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
 }
 
 .clear-button {
@@ -96,21 +105,24 @@ input[type="submit"]:hover {
     color: #f44336;
 }
 
+
+.table-container {
+    margin-top: 20px;
+}
+
 table {
     width: 50%;
     border-collapse: collapse;
     margin-top: 20px;
-    margin-right: 20px;
 }
 
-th, td {
-    font-size: 17px; /* Adjust font size as needed */
-}
 
 th, td {
+    font-size: 15px;
     border: 1px solid #dddddd;
     text-align: left;
     padding: 8px;
+    color: black; /* Set text color to black */
 }
 
 th {
@@ -135,3 +147,14 @@ th {
     box-sizing: border-box; /* Ensure input field width includes padding */
     text-align: left; /* Align text in input fields to the left */
 }
+
+.total-label {
+    font-weight: bold; /* Example: Make the label bold */
+    color: Black; /* Example: Set the label color to blue */
+    /* Add any other styles you want for the label */
+}
+
+.total-value {
+    /* Add styles for the total value */
+}
+
