@@ -1,8 +1,8 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Tahoma', sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../static/background.jpg') no-repeat center center fixed;
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), no-repeat center center fixed;
     background-size: cover;
     color: #fff;
     height: 100%;
@@ -27,7 +27,9 @@ body {
     width: 100%;
     text-align: center;
     overflow: auto; /* Ensure form-container handles overflow */
+    line-height: normal; /* Set line height to normal */
 }
+
 
 h1 {
     margin-bottom: 20px;
@@ -72,8 +74,16 @@ input[type="submit"]:hover {
 
 .result {
     margin-top: 20px;
-    font-size: 18px;
+    font-size: 16px;
     color: #333;
+}
+
+.label-container {
+    margin-top: 10px;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
 }
 
 .clear-button {
@@ -83,7 +93,8 @@ input[type="submit"]:hover {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: 10px; /* Adjust the margin as needed */
+    margin-bottom: 0; /* Remove any bottom margin */
 }
 
 .clear-button:hover {
@@ -96,22 +107,80 @@ input[type="submit"]:hover {
     color: #f44336;
 }
 
+
+.table-container {
+    margin-top: 0; /* Remove any top margin */
+    margin-bottom: 0; /* Remove any bottom margin */
+}
+
+#data_table {
+    margin-bottom: 0; /* Remove any bottom margin */
+    margin-top: 0; /* Remove any top margin */
+}
+
+table {
+    width: 50%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+
 th, td {
-    font-size: 17px;
-    text-align: center; /* Center align table data */
-    border: 1px solid #dddddd; /* Add border */
-    padding: 8px; /* Add padding */
+    font-size: 15px;
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    color: black; /* Set text color to black */
 }
 
 th {
     background-color: #f2f2f2;
-    text-align: center; /* Center align table headers */
-    border: 1px solid #dddddd; /* Add border */
-    padding: 8px; /* Add padding */
 }
 
-table {
-    width: 80%; /* Adjust table width */
-    margin: 20px auto; /* Center the table horizontally */
-    border-collapse: collapse;
+.input-label {
+    margin-top: 10px;
+    color: #333;
+    font-size: 14px;
+    font-weight: 600; /* Make labels bold */
+    text-align: left; /* Align labels to the left */
+}
+
+.input-field {
+    padding: 8px;
+    margin-top: 5px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box; /* Ensure input field width includes padding */
+    text-align: left; /* Align text in input fields to the left */
+}
+
+.total-label {
+    font-weight: bold; /* Example: Make the label bold */
+    color: Black; /* Example: Set the label color to blue */
+    /* Add any other styles you want for the label */
+}
+
+.total-value {
+    /* Add styles for the total value */
+}
+
+.total-value-result {
+    font-weight: 600;
+}
+
+.checkbox-container {
+    align-self: flex-start;
+    margin-top: 10px; /* Adjust the margin as needed */
+    margin-bottom: 5px;
+}
+
+.checkbox-label {
+    margin-left: 5px; /* Adjust the margin between the checkbox and the text */
+}
+
+.chart-container {
+    width: 100%; /* Adjust the width as needed */
+    /* Add any other styles you want for the chart container */
 }
