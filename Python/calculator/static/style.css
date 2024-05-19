@@ -27,6 +27,7 @@ body {
     width: 100%;
     text-align: center;
     overflow: auto; /* Ensure form-container handles overflow */
+    line-height: normal; /* Set line height to normal */
 }
 
 
@@ -92,7 +93,8 @@ input[type="submit"]:hover {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: 10px; /* Adjust the margin as needed */
+    margin-bottom: 0; /* Remove any bottom margin */
 }
 
 .clear-button:hover {
@@ -107,7 +109,13 @@ input[type="submit"]:hover {
 
 
 .table-container {
-    margin-top: 20px;
+    margin-top: 0; /* Remove any top margin */
+    margin-bottom: 0; /* Remove any bottom margin */
+}
+
+#data_table {
+    margin-bottom: 0; /* Remove any bottom margin */
+    margin-top: 0; /* Remove any top margin */
 }
 
 table {
@@ -157,7 +165,22 @@ th {
 .total-value {
     /* Add styles for the total value */
 }
+
 .total-value-result {
     font-weight: 600;
 }
 
+.checkbox-container {
+    align-self: flex-start;
+    margin-top: 10px; /* Adjust the margin as needed */
+    margin-bottom: 5px;
+}
+
+.checkbox-label {
+    margin-left: 5px; /* Adjust the margin between the checkbox and the text */
+}
+
+.chart-container {
+    width: 100%; /* Adjust the width as needed */
+    /* Add any other styles you want for the chart container */
+}
